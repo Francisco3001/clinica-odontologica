@@ -3,20 +3,21 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class BD {
     private static final String URL = "jdbc:h2:~/testdb";
     private static final String USER = "sa";
     private static final String PASSWORD = "";
 
-    public static final String SQL_DROP_CREATE_DOMICILIOS="DROP TABLE IF EXISTS DOMICILIOS; CREATE TABLE DOMICILIOS (\n" +
+    public static final String SQL_CREATE_DOMICILIOS="CREATE TABLE DOMICILIOS (\n" +
             "                    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
             "                    calle VARCHAR(100) not null,\n" +
             "                    numero INT not null,\n" +
             "                    localidad VARCHAR(100) not null,\n" +
             "                    provincia VARCHAR(100) not null\n" +
             "                );";
-    public static final String SQL_DROP_CREATE_PACIENTES="DROP TABLE IF EXISTS PACIENTES; CREATE TABLE PACIENTES (\n" +
+    public static final String SQL_CREATE_PACIENTES="CREATE TABLE PACIENTES (\n" +
             "                    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
             "                    nombre VARCHAR(100) not null,\n" +
             "                    apellido VARCHAR(100) not null,\n" +
@@ -27,6 +28,12 @@ public class BD {
             "                    FOREIGN KEY (domicilio_id) REFERENCES DOMICILIOS(id)\n" +
             "                );";
 
+    public static final String SQL_CREATE_ODONTOLOGOS="CREATE TABLE ODONTOLOGOS (\n" +
+            "                    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
+            "                    nombre VARCHAR(100) not null,\n" +
+            "                    apellido VARCHAR(100) not null,\n" +
+            "                    matricula VARCHAR(20) not null\n" +
+            "                );";
 
     public static final String PRUEBA_INSERTS = """
     -- Domicilios de prueba
@@ -42,13 +49,26 @@ public class BD {
     ('Martín', 'Pérez', 1144778899, '2025-10-01', 'martinperez@hotmail.com', 3);
     """;
 
+    public static void crearTablas(){
+        try (Connection conn = BD.getConnection();
+             Statement stmt = conn.createStatement()) {
+                stmt.execute("DROP TABLE IF EXISTS PACIENTES;");
+                stmt.execute("DROP TABLE IF EXISTS DOMICILIOS;");
+                stmt.execute("DROP TABLE IF EXISTS ODONTOLOGOS;");
+                stmt.execute(SQL_CREATE_DOMICILIOS);
+                stmt.execute(SQL_CREATE_PACIENTES);
+                stmt.execute(SQL_CREATE_ODONTOLOGOS);
+                System.out.println("✅ Tablas creadas correctamente.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static Connection getConnection(){
         Connection conn = null;
         try {
             Class.forName("org.h2.Driver");
             conn = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("✅ Conexión exitosa a H2");
         } catch (SQLException e) {
             System.err.println("❌ Error al conectar con la base de datos: " + e.getMessage());
         } catch (ClassNotFoundException e) {

@@ -14,14 +14,13 @@ public class Main {
              Statement stmt = conn.createStatement()) {
 
             // Crear tablas
-            stmt.execute(SQL_DROP_CREATE_DOMICILIOS);
-            stmt.execute(SQL_DROP_CREATE_PACIENTES);
+            stmt.execute(SQL_CREATE_DOMICILIOS);
+            stmt.execute(SQL_CREATE_PACIENTES);
             System.out.println("✅ Tablas creadas correctamente.");
 
             // Ejecutar inserts de prueba
             stmt.execute(PRUEBA_INSERTS);
             System.out.println("🧪 Datos de prueba insertados correctamente.");
-
 
         } catch (Exception e) {
             e.printStackTrace();
