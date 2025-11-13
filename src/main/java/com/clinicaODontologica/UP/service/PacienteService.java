@@ -1,12 +1,15 @@
 package com.clinicaODontologica.UP.service;
 
 
+import com.clinicaODontologica.UP.dto.PacienteRequestDTO;
 import com.clinicaODontologica.UP.entity.Domicilio;
 import com.clinicaODontologica.UP.entity.Paciente;
+import com.clinicaODontologica.UP.repository.DomicilioRepository;
 import com.clinicaODontologica.UP.repository.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 

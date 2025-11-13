@@ -30,7 +30,8 @@ public class Usuario implements UserDetails {
     private String password;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UsuarioRole usuarioRole;
 
     public Usuario(String nombre, String username, String password, String email, UsuarioRole usuarioRole) {

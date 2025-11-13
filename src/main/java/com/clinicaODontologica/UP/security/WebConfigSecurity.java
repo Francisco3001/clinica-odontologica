@@ -36,7 +36,7 @@ public class WebConfigSecurity {
                 .authorizeHttpRequests((authz)-> authz
                         .requestMatchers("/get_pacientes.html").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults()).logout(Customizer.withDefaults());
+                .formLogin(Customizer.withDefaults());
         return http.build();
     }
 }

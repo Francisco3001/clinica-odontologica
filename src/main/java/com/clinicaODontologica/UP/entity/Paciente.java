@@ -24,10 +24,10 @@ public class Paciente {
     @Column
     private String apellido;
     @Column
-    private Integer numeroContacto;
+    private Long numeroContacto;
     @Column
     private LocalDate fechaIngreso;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "domicilio_id",referencedColumnName = "id")
     private Domicilio domicilio;
     @Column(unique = true)
@@ -39,7 +39,7 @@ public class Paciente {
 
     //OneToMany y ManyToMany son LAZY default
     // ManyToOne y One to One son EAGER default
-    public Paciente(Long id, String nombre, String apellido, Integer numeroContacto, LocalDate fechaIngreso, Domicilio domicilio, String email) {
+    public Paciente(Long id, String nombre, String apellido, Long numeroContacto, LocalDate fechaIngreso, Domicilio domicilio, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.numeroContacto = numeroContacto;
@@ -49,7 +49,7 @@ public class Paciente {
         this.id = id;
     }
 
-    public Paciente(String nombre, String apellido, Integer numeroContacto, LocalDate fechaIngreso, Domicilio domicilio, String email) {
+    public Paciente(String nombre, String apellido, Long numeroContacto, LocalDate fechaIngreso, Domicilio domicilio, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.numeroContacto = numeroContacto;

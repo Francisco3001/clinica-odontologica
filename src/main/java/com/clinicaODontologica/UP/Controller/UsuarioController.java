@@ -1,8 +1,10 @@
 package com.clinicaODontologica.UP.Controller;
 
+import com.clinicaODontologica.UP.dto.UsuarioRequestDTO;
+import com.clinicaODontologica.UP.dto.UsuarioResponseDTO;
 import com.clinicaODontologica.UP.entity.Usuario;
+import com.clinicaODontologica.UP.entity.UsuarioRole;
 import com.clinicaODontologica.UP.service.UsuarioService;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,41 +21,70 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> registrar(@RequestBody Usuario usuario) {
-        return ResponseEntity.ok(usuarioService.registrar(usuario));
-    }
-    @GetMapping("/{email}")
-    public ResponseEntity<Usuario> buscarPorEmail(@PathVariable String email) {
-        Usuario usuario = usuarioService.buscarPorEmail(email);
-        return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
+    public ResponseEntity<UsuarioResponseDTO> registrar(@RequestBody UsuarioRequestDTO dto) {
+
+        Usuario usuario = new Usuario();
+        usuario.setNombre(dto.nombre);
+        usuario.setUsername(dto.username);
+        usuario.setPassword(dto.password);
+        usuario.setEmail(dto.email);
+        usuario.setUsuarioRole(UsuarioRole.valueOf(dto.usuarioRole));
+
+        Usuario guardado = usuarioService.registrar(usuario);
+        return ResponseEntity.ok(toResponseDTO(guardado));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable Long id) {
         Usuario usuario = usuarioService.buscar(id);
-        return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
+        return usuario != null ? ResponseEntity.ok(toResponseDTO(usuario)) : ResponseEntity.notFound().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listar() {
-        return ResponseEntity.ok(usuarioService.buscarTodos());
+    public ResponseEntity<List<UsuarioResponseDTO>> listar() {
+        List<UsuarioResponseDTO> lista = usuarioService.buscarTodos()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
+
+        return ResponseEntity.ok(lista);
     }
 
-    @PutMapping
-    public ResponseEntity<Usuario> actualizar(@RequestBody Usuario usuario) {
-        if (usuario.getId() == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(usuarioService.actualizar(usuario));
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> actualizar(
+            @PathVariable Long id,
+            @RequestBody UsuarioRequestDTO dto
+    ) {
+        Usuario usuario = usuarioService.buscar(id);
+        if (usuario == null) return ResponseEntity.notFound().build();
+
+        usuario.setNombre(dto.nombre);
+        usuario.setUsername(dto.username);
+        usuario.setPassword(dto.password);
+        usuario.setEmail(dto.email);
+        usuario.setUsuarioRole(UsuarioRole.valueOf(dto.usuarioRole));
+
+        Usuario actualizado = usuarioService.actualizar(usuario);
+
+        return ResponseEntity.ok(toResponseDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         Usuario usuario = usuarioService.buscar(id);
-        if (usuario == null) {
-            return ResponseEntity.notFound().build();
-        }
+        if (usuario == null) return ResponseEntity.notFound().build();
+
         usuarioService.eliminar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private UsuarioResponseDTO toResponseDTO(Usuario usuario) {
+        UsuarioResponseDTO dto = new UsuarioResponseDTO();
+        dto.id = usuario.getId();
+        dto.nombre = usuario.getNombre();
+        dto.username = usuario.getUsername();
+        dto.email = usuario.getEmail();
+        dto.usuarioRole = usuario.getUsuarioRole().name();
+        return dto;
     }
 }

@@ -45,11 +45,11 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public Usuario actualizar(Usuario usuario) {
-
+        System.out.println(usuario.getPassword());
         if (usuario.getPassword() != null) {
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
-
+        System.out.println(usuario.getPassword());
         return usuarioRepository.save(usuario);
     }
 

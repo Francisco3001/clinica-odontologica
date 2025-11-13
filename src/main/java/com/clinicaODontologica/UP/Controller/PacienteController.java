@@ -1,10 +1,15 @@
 package com.clinicaODontologica.UP.Controller;
 
+import com.clinicaODontologica.UP.dto.PacienteRequestDTO;
+import com.clinicaODontologica.UP.dto.PacienteResponseDTO;
+import com.clinicaODontologica.UP.entity.Domicilio;
 import com.clinicaODontologica.UP.entity.Paciente;
+import com.clinicaODontologica.UP.service.DomicilioService;
 import com.clinicaODontologica.UP.service.PacienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -12,33 +17,62 @@ import java.util.List;
 public class PacienteController {
 
     private final PacienteService pacienteService;
+    private final DomicilioService domicilioService;
 
-    public PacienteController(PacienteService pacienteService) {
+    public PacienteController(PacienteService pacienteService, DomicilioService domicilioService) {
         this.pacienteService = pacienteService;
+        this.domicilioService = domicilioService;
     }
 
     @PostMapping
-    public ResponseEntity<Paciente> guardar(@RequestBody Paciente paciente) {
-        return ResponseEntity.ok(pacienteService.guardar(paciente));
+    public ResponseEntity<PacienteResponseDTO> guardar(@RequestBody PacienteRequestDTO dto) {
+
+        Paciente paciente = new Paciente();
+        paciente.setNombre(dto.nombre);
+        paciente.setApellido(dto.apellido);
+        paciente.setEmail(dto.email);
+        paciente.setFechaIngreso(LocalDate.parse(dto.fechaIngreso));
+        paciente.setNumeroContacto(dto.numeroContacto);
+
+        Domicilio domicilio = domicilioService.buscar(dto.domicilioId);
+        paciente.setDomicilio(domicilio);
+
+        Paciente guardado = pacienteService.guardar(paciente);
+
+        return ResponseEntity.ok(toResponseDTO(guardado));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Paciente> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<PacienteResponseDTO> buscarPorId(@PathVariable Long id) {
         Paciente paciente = pacienteService.buscar(id);
-        return paciente != null ? ResponseEntity.ok(paciente) : ResponseEntity.notFound().build();
+        return paciente != null ? ResponseEntity.ok(toResponseDTO(paciente)) : ResponseEntity.notFound().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<Paciente>> buscarTodos() {
-        return ResponseEntity.ok(pacienteService.buscarTodos());
+    public ResponseEntity<List<PacienteResponseDTO>> buscarTodos() {
+        List<Paciente> lista = pacienteService.buscarTodos();
+        List<PacienteResponseDTO> respuesta = lista.stream().map(this::toResponseDTO).toList();
+        return ResponseEntity.ok(respuesta);
     }
 
-    @PutMapping
-    public ResponseEntity<Paciente> actualizar(@RequestBody Paciente paciente) {
-        if (paciente.getId() == null) {
-            return ResponseEntity.badRequest().build();
+    @PutMapping("/{id}")
+    public ResponseEntity<PacienteResponseDTO> actualizar(@PathVariable Long id, @RequestBody PacienteRequestDTO dto) {
+        Paciente paciente = pacienteService.buscar(id);
+        if (paciente == null) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(pacienteService.actualizar(paciente));
+
+        paciente.setNombre(dto.nombre);
+        paciente.setApellido(dto.apellido);
+        paciente.setEmail(dto.email);
+        paciente.setFechaIngreso(LocalDate.parse(dto.fechaIngreso));
+        paciente.setNumeroContacto(dto.numeroContacto);
+
+        Domicilio domicilio = domicilioService.buscar(dto.domicilioId);
+        paciente.setDomicilio(domicilio);
+
+        Paciente actualizado = pacienteService.actualizar(paciente);
+        return ResponseEntity.ok(toResponseDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")
@@ -49,5 +83,17 @@ public class PacienteController {
         }
         pacienteService.eliminar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private PacienteResponseDTO toResponseDTO(Paciente paciente) { //pasa la entidad a un dto de respuesta
+        PacienteResponseDTO dto = new PacienteResponseDTO();
+        dto.id = paciente.getId();
+        dto.nombre = paciente.getNombre();
+        dto.apellido = paciente.getApellido();
+        dto.email = paciente.getEmail();
+        dto.fechaIngreso = paciente.getFechaIngreso().toString();
+        dto.numeroContacto = paciente.getNumeroContacto();
+        dto.domicilioId = paciente.getDomicilio().getId();
+        return dto;
     }
 }

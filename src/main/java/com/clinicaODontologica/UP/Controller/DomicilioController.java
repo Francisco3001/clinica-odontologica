@@ -1,5 +1,7 @@
 package com.clinicaODontologica.UP.Controller;
 
+import com.clinicaODontologica.UP.dto.DomicilioRequestDTO;
+import com.clinicaODontologica.UP.dto.DomicilioResponseDTO;
 import com.clinicaODontologica.UP.entity.Domicilio;
 import com.clinicaODontologica.UP.service.DomicilioService;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController //Sin tecnologia de vista
+@RestController
 @RequestMapping("/api/domicilio")
 public class DomicilioController {
 
@@ -18,34 +20,57 @@ public class DomicilioController {
     }
 
     @PostMapping
-    public ResponseEntity<Domicilio> guardar(@RequestBody Domicilio domicilio) {
-        return ResponseEntity.ok(domicilioService.guardar(domicilio));
+    public ResponseEntity<DomicilioResponseDTO> guardar(@RequestBody DomicilioRequestDTO dto) {
+
+        Domicilio domicilio = new Domicilio();
+        domicilio.setCalle(dto.calle);
+        domicilio.setNumero(dto.numero);
+        domicilio.setLocalidad(dto.localidad);
+        domicilio.setProvincia(dto.provincia);
+
+        Domicilio guardado = domicilioService.guardar(domicilio);
+        return ResponseEntity.ok(toResponseDTO(guardado));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Domicilio> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<DomicilioResponseDTO> buscarPorId(@PathVariable Long id) {
         Domicilio domicilio = domicilioService.buscar(id);
-        return domicilio != null ? ResponseEntity.ok(domicilio) : ResponseEntity.notFound().build();
+        return domicilio != null ?
+                ResponseEntity.ok(toResponseDTO(domicilio)) :
+                ResponseEntity.notFound().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<Domicilio>> buscarTodos() {
-        return ResponseEntity.ok(domicilioService.buscarTodos());
+    public ResponseEntity<List<DomicilioResponseDTO>> buscarTodos() {
+        List<Domicilio> lista = domicilioService.buscarTodos();
+        List<DomicilioResponseDTO> respuesta = lista.stream()
+                .map(this::toResponseDTO)
+                .toList();
+
+        return ResponseEntity.ok(respuesta);
     }
 
-    @PutMapping
-    public ResponseEntity<Domicilio> actualizar(@RequestBody Domicilio domicilio) {
+    @PutMapping("/{id}")
+    public ResponseEntity<DomicilioResponseDTO> actualizar(
+            @PathVariable Long id,
+            @RequestBody DomicilioRequestDTO dto) {
 
-        if (domicilio.getId() == null) {
-            return ResponseEntity.badRequest().build();
+        Domicilio domicilio = domicilioService.buscar(id);
+        if (domicilio == null) {
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(domicilioService.actualizar(domicilio));
+        domicilio.setCalle(dto.calle);
+        domicilio.setNumero(dto.numero);
+        domicilio.setLocalidad(dto.localidad);
+        domicilio.setProvincia(dto.provincia);
+
+        Domicilio actualizado = domicilioService.actualizar(domicilio);
+        return ResponseEntity.ok(toResponseDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-
         Domicilio domicilio = domicilioService.buscar(id);
         if (domicilio == null) {
             return ResponseEntity.notFound().build();
@@ -53,5 +78,15 @@ public class DomicilioController {
 
         domicilioService.eliminar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private DomicilioResponseDTO toResponseDTO(Domicilio domicilio) {
+        DomicilioResponseDTO dto = new DomicilioResponseDTO();
+        dto.id = domicilio.getId();
+        dto.calle = domicilio.getCalle();
+        dto.numero = domicilio.getNumero();
+        dto.localidad = domicilio.getLocalidad();
+        dto.provincia = domicilio.getProvincia();
+        return dto;
     }
 }
