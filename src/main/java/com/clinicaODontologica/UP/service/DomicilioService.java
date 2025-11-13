@@ -1,5 +1,6 @@
 package com.clinicaODontologica.UP.service;
 
+import com.clinicaODontologica.UP.dto.DomicilioResponseDTO;
 import com.clinicaODontologica.UP.entity.Domicilio;
 import com.clinicaODontologica.UP.repository.DomicilioRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,10 +4,13 @@ import com.clinicaODontologica.UP.dto.OdontologoRequestDTO;
 import com.clinicaODontologica.UP.dto.OdontologoResponseDTO;
 import com.clinicaODontologica.UP.entity.Odontologo;
 import com.clinicaODontologica.UP.service.OdontologoService;
+import com.clinicaODontologica.UP.mapper.OdontologoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.clinicaODontologica.UP.mapper.OdontologoMapper.toDTO;
 
 @RestController
 @RequestMapping("/api/odontologo")
@@ -28,29 +31,31 @@ public class OdontologoController {
         odontologo.setMatricula(dto.matricula);
 
         Odontologo guardado = odontologoService.guardar(odontologo);
-        return ResponseEntity.ok(toResponseDTO(guardado));
+        return ResponseEntity.ok(toDTO(guardado));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OdontologoResponseDTO> buscarPorId(@PathVariable Long id) {
         Odontologo odontologo = odontologoService.buscar(id);
         return odontologo != null ?
-                ResponseEntity.ok(toResponseDTO(odontologo)) :
+                ResponseEntity.ok(toDTO(odontologo)) :
                 ResponseEntity.notFound().build();
     }
 
     @GetMapping
     public ResponseEntity<List<OdontologoResponseDTO>> buscarTodos() {
-        List<Odontologo> lista = odontologoService.buscarTodos();
-        List<OdontologoResponseDTO> respuesta = lista.stream()
-                .map(this::toResponseDTO)
+        List<OdontologoResponseDTO> respuesta = odontologoService.buscarTodos()
+                .stream()
+                .map(OdontologoMapper::toDTO)
                 .toList();
+
         return ResponseEntity.ok(respuesta);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<OdontologoResponseDTO> actualizar(
-            @PathVariable Long id, @RequestBody OdontologoRequestDTO dto) {
+            @PathVariable Long id,
+            @RequestBody OdontologoRequestDTO dto) {
 
         Odontologo odontologo = odontologoService.buscar(id);
         if (odontologo == null) {
@@ -62,7 +67,7 @@ public class OdontologoController {
         odontologo.setMatricula(dto.matricula);
 
         Odontologo actualizado = odontologoService.actualizar(odontologo);
-        return ResponseEntity.ok(toResponseDTO(actualizado));
+        return ResponseEntity.ok(toDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")
@@ -75,13 +80,5 @@ public class OdontologoController {
         odontologoService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
-
-    private OdontologoResponseDTO toResponseDTO(Odontologo odontologo) {
-        OdontologoResponseDTO dto = new OdontologoResponseDTO();
-        dto.id = odontologo.getId();
-        dto.nombre = odontologo.getNombre();
-        dto.apellido = odontologo.getApellido();
-        dto.matricula = odontologo.getMatricula();
-        return dto;
-    }
 }
+

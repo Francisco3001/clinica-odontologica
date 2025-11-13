@@ -8,12 +8,15 @@ import com.clinicaODontologica.UP.entity.Turno;
 import com.clinicaODontologica.UP.service.OdontologoService;
 import com.clinicaODontologica.UP.service.PacienteService;
 import com.clinicaODontologica.UP.service.TurnoService;
+
+import com.clinicaODontologica.UP.mapper.TurnoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.clinicaODontologica.UP.mapper.TurnoMapper.toDTO;
 
 @RestController
 @RequestMapping("/api/turno")
@@ -41,27 +44,31 @@ public class TurnoController {
         turno.setOdontologo(odontologo);
 
         Turno guardado = turnoService.guardar(turno);
-        return ResponseEntity.ok(toResponseDTO(guardado));
+        return ResponseEntity.ok(toDTO(guardado));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TurnoResponseDTO> buscarPorId(@PathVariable Long id) {
         Turno turno = turnoService.buscar(id);
-        return turno != null ? ResponseEntity.ok(toResponseDTO(turno)) : ResponseEntity.notFound().build();
+        return turno != null ?
+                ResponseEntity.ok(toDTO(turno)) :
+                ResponseEntity.notFound().build();
     }
 
     @GetMapping
     public ResponseEntity<List<TurnoResponseDTO>> buscarTodos() {
         List<TurnoResponseDTO> lista = turnoService.buscarTodos()
                 .stream()
-                .map(this::toResponseDTO)
+                .map(TurnoMapper::toDTO)
                 .toList();
 
         return ResponseEntity.ok(lista);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TurnoResponseDTO> actualizar(@PathVariable Long id, @RequestBody TurnoRequestDTO dto) {
+    public ResponseEntity<TurnoResponseDTO> actualizar(@PathVariable Long id,
+                                                       @RequestBody TurnoRequestDTO dto) {
+
         Turno turno = turnoService.buscar(id);
         if (turno == null) return ResponseEntity.notFound().build();
 
@@ -73,7 +80,7 @@ public class TurnoController {
         turno.setOdontologo(odontologo);
 
         Turno actualizado = turnoService.actualizar(turno);
-        return ResponseEntity.ok(toResponseDTO(actualizado));
+        return ResponseEntity.ok(toDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")
@@ -83,14 +90,5 @@ public class TurnoController {
 
         turnoService.eliminar(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private TurnoResponseDTO toResponseDTO(Turno turno) {
-        TurnoResponseDTO dto = new TurnoResponseDTO();
-        dto.id = turno.getId();
-        dto.fecha = turno.getFecha().toString();
-        dto.pacienteId = turno.getPaciente().getId();
-        dto.odontologoId = turno.getOdontologo().getId();
-        return dto;
     }
 }
