@@ -1,6 +1,8 @@
 package com.clinicaODontologica.UP.service;
 
+import com.clinicaODontologica.UP.dto.UsuarioRequestDTO;
 import com.clinicaODontologica.UP.entity.Usuario;
+import com.clinicaODontologica.UP.entity.UsuarioRole;
 import com.clinicaODontologica.UP.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,13 +47,28 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public Usuario actualizar(Usuario usuario) {
-        System.out.println(usuario.getPassword());
-        if (usuario.getPassword() != null) {
+
+        Usuario original = usuarioRepository.findById(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Si NO se envió password → mantener la original
+        if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
+            usuario.setPassword(original.getPassword());
+        } else {
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
-        System.out.println(usuario.getPassword());
-        return usuarioRepository.save(usuario);
+
+        original.setNombre(usuario.getNombre());
+        original.setUsername(usuario.getUsername());
+        original.setEmail(usuario.getEmail());
+        original.setUsuarioRole(usuario.getUsuarioRole());
+        original.setPassword(usuario.getPassword());
+
+        Usuario guardado = usuarioRepository.save(original);
+
+        return guardado;
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

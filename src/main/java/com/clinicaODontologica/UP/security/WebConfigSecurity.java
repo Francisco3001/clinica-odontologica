@@ -4,6 +4,7 @@ import com.clinicaODontologica.UP.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,11 +33,22 @@ public class WebConfigSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authz)-> authz
-                        .requestMatchers("/get_pacientes.html").permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults());
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+
+                        // SOLO ADMIN puede crear, actualizar o borrar
+                        .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("ADMIN")
+
+                        // USUARIO puede hacer solo GET
+                        .requestMatchers(HttpMethod.GET, "/api/**").hasAnyAuthority("ADMIN", "USUARIO")
+
+                        .anyRequest().authenticated()
+                )
+                .userDetailsService(usuarioService) // 🔥 MUY IMPORTANTE
+                .formLogin(form -> form.permitAll()); // 👉 Login DEFAULT
+
         return http.build();
     }
 }

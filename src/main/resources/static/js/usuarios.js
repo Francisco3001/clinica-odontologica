@@ -240,7 +240,7 @@ async function updateUsuario() {
         };
         
         // Solo incluir password si se proporcionó uno nuevo
-        if (password) {
+        if (password != null && password.trim() !== "") {
             usuarioActualizado.password = password;
         }
         

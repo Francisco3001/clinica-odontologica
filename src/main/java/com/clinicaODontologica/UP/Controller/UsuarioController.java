@@ -54,18 +54,20 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponseDTO> actualizar(
             @PathVariable Long id,
             @RequestBody UsuarioRequestDTO dto
-    ) {
-        Usuario usuario = usuarioService.buscar(id);
-        if (usuario == null) return ResponseEntity.notFound().build();
-
+    ){
+        Usuario usuario = new Usuario();
+        usuario.setId(id);
         usuario.setNombre(dto.nombre);
         usuario.setUsername(dto.username);
-        usuario.setPassword(dto.password);
         usuario.setEmail(dto.email);
         usuario.setUsuarioRole(UsuarioRole.valueOf(dto.usuarioRole));
 
-        Usuario actualizado = usuarioService.actualizar(usuario);
+        // Solo asignar una password si vino en el JSON
+        if (dto.password != null && !dto.password.isBlank()) {
+            usuario.setPassword(dto.password);
+        }
 
+        Usuario actualizado = usuarioService.actualizar(usuario);
         return ResponseEntity.ok(toResponseDTO(actualizado));
     }
 
