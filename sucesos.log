@@ -1,0 +1,67 @@
+
+
+[2025-10-16 20:09:33] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 2
+[2025-10-16 20:15:29] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 2
+[2025-10-16 20:15:29] [ ERROR] [PacienteDAOH2:45] Table "PACIENTES" not found (this database is empty); SQL statement:
+ SELECT * FROM PACIENTES WHERE ID=? [42104-232]
+[2025-10-16 20:29:49] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 2
+[2025-10-16 20:29:49] [ ERROR] [PacienteDAOH2:45] Table "PACIENTES" not found (this database is empty); SQL statement:
+ SELECT * FROM PACIENTES WHERE ID=? [42104-232]
+[2025-10-16 20:40:31] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 1
+[2025-10-16 20:40:31] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 20:40:31] [ INFO ] [PacienteDAOH2:47] Paciente{nombre='Homero', apellido='Simpson', id=1}
+[2025-10-16 20:43:07] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 1
+[2025-10-16 20:43:07] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 20:43:07] [ INFO ] [PacienteDAOH2:47] Paciente{nombre='Homero', apellido='Simpson', id=1}
+[2025-10-16 20:43:36] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 2
+[2025-10-16 20:43:36] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 20:43:36] [ INFO ] [PacienteDAOH2:47] Paciente{nombre='Marge', apellido='Simpson', id=2}
+[2025-10-16 20:45:59] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 1
+[2025-10-16 20:45:59] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 20:45:59] [ INFO ] [PacienteDAOH2:47] Paciente{nombre='Homero', apellido='Simpson', id=1}
+[2025-10-16 20:46:08] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 2
+[2025-10-16 20:46:08] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 20:46:08] [ INFO ] [PacienteDAOH2:47] Paciente{nombre='Marge', apellido='Simpson', id=2}
+[2025-10-16 20:46:16] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 20
+[2025-10-16 20:46:27] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 2
+[2025-10-16 20:46:27] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 20:46:27] [ INFO ] [PacienteDAOH2:47] Paciente{nombre='Marge', apellido='Simpson', id=2}
+[2025-10-16 20:56:09] [ INFO ] [PacienteDAOH2:27] iniciando las operaciones de busqueda con el ID: 2
+[2025-10-16 20:56:09] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 20:56:09] [ INFO ] [PacienteDAOH2:47] Paciente{nombre='Marge', apellido='Simpson', id=2}
+[2025-10-16 21:27:28] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:27:28] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:27:28] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:27:43] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:27:43] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:27:43] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:27:45] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:27:45] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:27:45] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:27:46] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:27:46] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:27:46] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:27:51] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:27:51] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:27:51] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:27:53] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:27:53] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:27:53] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:36:14] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:36:14] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:36:14] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:36:17] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:36:17] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:36:17] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:36:22] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:36:22] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:36:22] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:39:32] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:39:32] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:39:32] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:54:10] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:54:10] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:54:10] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
+[2025-10-16 21:56:25] [ INFO ] [PacienteDAOH2:71] iniciando las operaciones de listado
+[2025-10-16 21:56:25] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 1
+[2025-10-16 21:56:25] [ INFO ] [DomicilioDAOH2:25] iniciando la busqueda del domicilio con ID: 2
