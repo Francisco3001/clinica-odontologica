@@ -10,14 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.clinicaODontologica.UP.mapper.DomicilioMapper.toDTO;
-
 @RestController
 @RequestMapping("/api/domicilio")
 public class DomicilioController {
 
     private final DomicilioService domicilioService;
-    private final DomicilioMapper domicilioMapper;
 
     public DomicilioController(DomicilioService domicilioService) {
         this.domicilioService = domicilioService;
@@ -25,22 +22,16 @@ public class DomicilioController {
 
     @PostMapping
     public ResponseEntity<DomicilioResponseDTO> guardar(@RequestBody DomicilioRequestDTO dto) {
-
-        Domicilio domicilio = new Domicilio();
-        domicilio.setCalle(dto.calle);
-        domicilio.setNumero(dto.numero);
-        domicilio.setLocalidad(dto.localidad);
-        domicilio.setProvincia(dto.provincia);
-
+        Domicilio domicilio = DomicilioMapper.toEntityFromRequest(dto);
         Domicilio guardado = domicilioService.guardar(domicilio);
-        return ResponseEntity.ok(domicilioToDomicilioResponseDTO(guardado));
+        return ResponseEntity.ok(DomicilioMapper.toResponseDTO(guardado));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DomicilioResponseDTO> buscarPorId(@PathVariable Long id) {
         Domicilio domicilio = domicilioService.buscar(id);
         return domicilio != null ?
-                ResponseEntity.ok(domicilioToDomicilioResponseDTO(domicilio)) :
+                ResponseEntity.ok(DomicilioMapper.toResponseDTO(domicilio)) :
                 ResponseEntity.notFound().build();
     }
 
@@ -48,12 +39,11 @@ public class DomicilioController {
     public ResponseEntity<List<DomicilioResponseDTO>> buscarTodos() {
         List<DomicilioResponseDTO> respuesta = domicilioService.buscarTodos()
                 .stream()
-                .map(DomicilioMapper::toDTO)
+                .map(DomicilioMapper::toResponseDTO)
                 .toList();
 
         return ResponseEntity.ok(respuesta);
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<DomicilioResponseDTO> actualizar(
@@ -71,7 +61,7 @@ public class DomicilioController {
         domicilio.setProvincia(dto.provincia);
 
         Domicilio actualizado = domicilioService.actualizar(domicilio);
-        return ResponseEntity.ok(toDTO(actualizado));
+        return ResponseEntity.ok(DomicilioMapper.toResponseDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")

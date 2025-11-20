@@ -13,10 +13,7 @@ import com.clinicaODontologica.UP.mapper.TurnoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-
-import static com.clinicaODontologica.UP.mapper.TurnoMapper.toDTO;
 
 @RestController
 @RequestMapping("/api/turno")
@@ -34,24 +31,23 @@ public class TurnoController {
 
     @PostMapping
     public ResponseEntity<TurnoResponseDTO> guardar(@RequestBody TurnoRequestDTO dto) {
+        Turno turno = TurnoMapper.toEntityFromRequest(dto);
 
         Paciente paciente = pacienteService.buscar(dto.pacienteId);
         Odontologo odontologo = odontologoService.buscar(dto.odontologoId);
 
-        Turno turno = new Turno();
-        turno.setFecha(LocalDate.parse(dto.fecha));
         turno.setPaciente(paciente);
         turno.setOdontologo(odontologo);
 
         Turno guardado = turnoService.guardar(turno);
-        return ResponseEntity.ok(toDTO(guardado));
+        return ResponseEntity.ok(TurnoMapper.toResponseDTO(guardado));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TurnoResponseDTO> buscarPorId(@PathVariable Long id) {
         Turno turno = turnoService.buscar(id);
         return turno != null ?
-                ResponseEntity.ok(toDTO(turno)) :
+                ResponseEntity.ok(TurnoMapper.toResponseDTO(turno)) :
                 ResponseEntity.notFound().build();
     }
 
@@ -59,7 +55,7 @@ public class TurnoController {
     public ResponseEntity<List<TurnoResponseDTO>> buscarTodos() {
         List<TurnoResponseDTO> lista = turnoService.buscarTodos()
                 .stream()
-                .map(TurnoMapper::toDTO)
+                .map(TurnoMapper::toResponseDTO)
                 .toList();
 
         return ResponseEntity.ok(lista);
@@ -75,12 +71,12 @@ public class TurnoController {
         Paciente paciente = pacienteService.buscar(dto.pacienteId);
         Odontologo odontologo = odontologoService.buscar(dto.odontologoId);
 
-        turno.setFecha(LocalDate.parse(dto.fecha));
+        turno.setFecha(java.time.LocalDate.parse(dto.fecha));
         turno.setPaciente(paciente);
         turno.setOdontologo(odontologo);
 
         Turno actualizado = turnoService.actualizar(turno);
-        return ResponseEntity.ok(toDTO(actualizado));
+        return ResponseEntity.ok(TurnoMapper.toResponseDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")

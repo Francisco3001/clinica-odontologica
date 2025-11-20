@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.clinicaODontologica.UP.mapper.OdontologoMapper.toDTO;
-
 @RestController
 @RequestMapping("/api/odontologo")
 public class OdontologoController {
@@ -24,21 +22,16 @@ public class OdontologoController {
 
     @PostMapping
     public ResponseEntity<OdontologoResponseDTO> guardar(@RequestBody OdontologoRequestDTO dto) {
-
-        Odontologo odontologo = new Odontologo();
-        odontologo.setNombre(dto.nombre);
-        odontologo.setApellido(dto.apellido);
-        odontologo.setMatricula(dto.matricula);
-
+        Odontologo odontologo = OdontologoMapper.toEntityFromRequest(dto);
         Odontologo guardado = odontologoService.guardar(odontologo);
-        return ResponseEntity.ok(toDTO(guardado));
+        return ResponseEntity.ok(OdontologoMapper.toResponseDTO(guardado));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OdontologoResponseDTO> buscarPorId(@PathVariable Long id) {
         Odontologo odontologo = odontologoService.buscar(id);
         return odontologo != null ?
-                ResponseEntity.ok(toDTO(odontologo)) :
+                ResponseEntity.ok(OdontologoMapper.toResponseDTO(odontologo)) :
                 ResponseEntity.notFound().build();
     }
 
@@ -46,7 +39,7 @@ public class OdontologoController {
     public ResponseEntity<List<OdontologoResponseDTO>> buscarTodos() {
         List<OdontologoResponseDTO> respuesta = odontologoService.buscarTodos()
                 .stream()
-                .map(OdontologoMapper::toDTO)
+                .map(OdontologoMapper::toResponseDTO)
                 .toList();
 
         return ResponseEntity.ok(respuesta);
@@ -67,7 +60,7 @@ public class OdontologoController {
         odontologo.setMatricula(dto.matricula);
 
         Odontologo actualizado = odontologoService.actualizar(odontologo);
-        return ResponseEntity.ok(toDTO(actualizado));
+        return ResponseEntity.ok(OdontologoMapper.toResponseDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")
@@ -81,4 +74,3 @@ public class OdontologoController {
         return ResponseEntity.noContent().build();
     }
 }
-

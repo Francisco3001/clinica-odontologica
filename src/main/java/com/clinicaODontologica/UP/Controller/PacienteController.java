@@ -11,10 +11,7 @@ import com.clinicaODontologica.UP.mapper.PacienteMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-
-import static com.clinicaODontologica.UP.mapper.PacienteMapper.toDTO;
 
 @RestController
 @RequestMapping("/api/paciente")
@@ -30,26 +27,20 @@ public class PacienteController {
 
     @PostMapping
     public ResponseEntity<PacienteResponseDTO> guardar(@RequestBody PacienteRequestDTO dto) {
-
-        Paciente paciente = new Paciente();
-        paciente.setNombre(dto.nombre);
-        paciente.setApellido(dto.apellido);
-        paciente.setEmail(dto.email);
-        paciente.setFechaIngreso(LocalDate.parse(dto.fechaIngreso));
-        paciente.setNumeroContacto(dto.numeroContacto);
+        Paciente paciente = PacienteMapper.toEntityFromRequest(dto);
 
         Domicilio domicilio = domicilioService.buscar(dto.domicilioId);
         paciente.setDomicilio(domicilio);
 
         Paciente guardado = pacienteService.guardar(paciente);
-        return ResponseEntity.ok(toDTO(guardado));
+        return ResponseEntity.ok(PacienteMapper.toResponseDTO(guardado));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PacienteResponseDTO> buscarPorId(@PathVariable Long id) {
         Paciente paciente = pacienteService.buscar(id);
         return paciente != null ?
-                ResponseEntity.ok(toDTO(paciente)) :
+                ResponseEntity.ok(PacienteMapper.toResponseDTO(paciente)) :
                 ResponseEntity.notFound().build();
     }
 
@@ -57,7 +48,7 @@ public class PacienteController {
     public ResponseEntity<List<PacienteResponseDTO>> buscarTodos() {
         List<PacienteResponseDTO> respuesta = pacienteService.buscarTodos()
                 .stream()
-                .map(PacienteMapper::toDTO)
+                .map(PacienteMapper::toResponseDTO)
                 .toList();
 
         return ResponseEntity.ok(respuesta);
@@ -74,14 +65,14 @@ public class PacienteController {
         paciente.setNombre(dto.nombre);
         paciente.setApellido(dto.apellido);
         paciente.setEmail(dto.email);
-        paciente.setFechaIngreso(LocalDate.parse(dto.fechaIngreso));
+        paciente.setFechaIngreso(java.time.LocalDate.parse(dto.fechaIngreso));
         paciente.setNumeroContacto(dto.numeroContacto);
 
         Domicilio domicilio = domicilioService.buscar(dto.domicilioId);
         paciente.setDomicilio(domicilio);
 
         Paciente actualizado = pacienteService.actualizar(paciente);
-        return ResponseEntity.ok(toDTO(actualizado));
+        return ResponseEntity.ok(PacienteMapper.toResponseDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")

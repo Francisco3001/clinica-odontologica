@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.clinicaODontologica.UP.mapper.UsuarioMapper.toDTO;
-
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
@@ -25,23 +23,16 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> registrar(@RequestBody UsuarioRequestDTO dto) {
-
-        Usuario usuario = new Usuario();
-        usuario.setNombre(dto.nombre);
-        usuario.setUsername(dto.username);
-        usuario.setPassword(dto.password);
-        usuario.setEmail(dto.email);
-        usuario.setUsuarioRole(UsuarioRole.valueOf(dto.usuarioRole));
-
+        Usuario usuario = UsuarioMapper.toEntityFromRequest(dto);
         Usuario guardado = usuarioService.registrar(usuario);
-        return ResponseEntity.ok(toDTO(guardado));
+        return ResponseEntity.ok(UsuarioMapper.toResponseDTO(guardado));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable Long id) {
         Usuario usuario = usuarioService.buscar(id);
         return usuario != null ?
-                ResponseEntity.ok(toDTO(usuario)) :
+                ResponseEntity.ok(UsuarioMapper.toResponseDTO(usuario)) :
                 ResponseEntity.notFound().build();
     }
 
@@ -49,7 +40,7 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioResponseDTO>> listar() {
         List<UsuarioResponseDTO> lista = usuarioService.buscarTodos()
                 .stream()
-                .map(UsuarioMapper::toDTO)
+                .map(UsuarioMapper::toResponseDTO)
                 .toList();
 
         return ResponseEntity.ok(lista);
@@ -73,7 +64,7 @@ public class UsuarioController {
         }
 
         Usuario actualizado = usuarioService.actualizar(usuario);
-        return ResponseEntity.ok(toDTO(actualizado));
+        return ResponseEntity.ok(UsuarioMapper.toResponseDTO(actualizado));
     }
 
     @DeleteMapping("/{id}")
