@@ -1,5 +1,7 @@
 package com.clinicaODontologica.UP.service;
 
+import com.clinicaODontologica.UP.Exception.OdontologoExistenteException;
+import com.clinicaODontologica.UP.Exception.PacienteExistenteException;
 import com.clinicaODontologica.UP.entity.Domicilio;
 import com.clinicaODontologica.UP.entity.Odontologo;
 import com.clinicaODontologica.UP.repository.DomicilioRepository;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OdontologoService implements iService<Odontologo>{
@@ -18,8 +21,16 @@ public class OdontologoService implements iService<Odontologo>{
         this.odontologoRepository = odontologoRepository;
     }
 
-    public Odontologo guardar(Odontologo entidad) {
-        return odontologoRepository.save(entidad);
+    public Odontologo guardar(Odontologo odontologo) {
+
+        odontologoRepository.findByMatricula(odontologo.getMatricula()).ifPresent(p -> {
+            throw new OdontologoExistenteException(
+                    "Ya existe un odontologo con la matricula: " + odontologo.getMatricula()
+            );
+        });
+
+        // Guardar normalmente
+        return odontologoRepository.save(odontologo);
     }
 
     public Odontologo buscar(Long id) {

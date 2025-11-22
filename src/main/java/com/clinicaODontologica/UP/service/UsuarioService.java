@@ -1,5 +1,7 @@
 package com.clinicaODontologica.UP.service;
 
+import com.clinicaODontologica.UP.Exception.PacienteExistenteException;
+import com.clinicaODontologica.UP.Exception.UsuarioExistenteException;
 import com.clinicaODontologica.UP.dto.UsuarioRequestDTO;
 import com.clinicaODontologica.UP.entity.Usuario;
 import com.clinicaODontologica.UP.entity.UsuarioRole;
@@ -25,6 +27,13 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public Usuario registrar(Usuario usuario) {
+
+        usuarioRepository.findByEmail(usuario.getEmail()).ifPresent(p -> {
+            throw new UsuarioExistenteException(
+                    "Ya existe un usuario con el email: " + usuario.getEmail()
+            );
+        });
+
         usuario.setUsername(usuario.getEmail());//email como username
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return usuarioRepository.save(usuario);

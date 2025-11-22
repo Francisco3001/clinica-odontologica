@@ -1,6 +1,7 @@
 package com.clinicaODontologica.UP.service;
 
 
+import com.clinicaODontologica.UP.Exception.PacienteExistenteException;
 import com.clinicaODontologica.UP.dto.PacienteRequestDTO;
 import com.clinicaODontologica.UP.entity.Domicilio;
 import com.clinicaODontologica.UP.entity.Paciente;
@@ -23,6 +24,13 @@ public class PacienteService implements iService<Paciente>{
     }
 
     public Paciente guardar(Paciente paciente) {
+
+        pacienteRepository.findByEmail(paciente.getEmail()).ifPresent(p -> {
+            throw new PacienteExistenteException(
+                    "Ya existe un paciente con el email: " + paciente.getEmail()
+            );
+        });
+
         return pacienteRepository.save(paciente);
     }
 
